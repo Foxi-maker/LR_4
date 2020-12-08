@@ -1,0 +1,7 @@
+-----------------------
+Number of nodes: 8
+Lagrangian polynomial:
+Uniform Partition
++1*x^(2)
+Error rate:3.9968e-15
+Elapsed time: 0.0059274s
