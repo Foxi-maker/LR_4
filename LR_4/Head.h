@@ -1,9 +1,9 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <functional>
-#define _USE_MATH_DEFINES
 #include <math.h>
 #include <fstream>
 #include <string>
@@ -13,9 +13,15 @@ namespace specf
 {
 	double faсtorial(double x);
 
+	double SecondDerivative(std::function<double(double)>, double);
+
 	//Второй аргемент - число элементов для перестановки без повторений
 	//Число мест для перестановки берется из размерности вектора
 	bool next_combination(std::vector<int>&, int);
+
+	void Difference(double*, double*, double*, int);
+
+	double NormInf(double*, int);
 }
 //Тестовые функции
 namespace testf

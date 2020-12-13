@@ -14,7 +14,7 @@ class InterpFunc
 	static std::fstream stream;
 public:
 	InterpFunc();
-	//(”казатель на фукнцию, интервал а,b, название функции, число разбиений сетки)
+	//(”казатель на фукнцию, интервал а,b, название функции)
 	InterpFunc(std::function<double(double)>,int,int,std::string);
 
 	void NumNods(int n);
@@ -31,7 +31,8 @@ public:
 	void StreamOpen(std::string);
 	void OutToFile(const std::string) const;
 
-	void RenderGridToFile(double*,int);
+	void LRenderGridToFile(double*,int);
+	void SRenderGridToFile(double**, std::vector<double>&);
 
 	~InterpFunc();
 };

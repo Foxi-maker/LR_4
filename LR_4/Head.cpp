@@ -7,6 +7,12 @@ double specf::fañtorial(double x)
 	return x * fañtorial(x - 1.);
 }
 
+double specf::SecondDerivative(std::function<double(double)> f, double point)
+{
+	double h = 1.;
+	return ((f(point + h) - 2 * f(point) + f(point - h)) / (h*h));
+}
+
 bool specf::next_combination(std::vector<int>& vec, int n)
 {
 	int m = vec.size();
@@ -19,6 +25,25 @@ bool specf::next_combination(std::vector<int>& vec, int n)
 			return true;
 		}
 	return false;
+}
+
+void specf::Difference(double* x, double* y, double* z,int n)
+{
+	for (int i = 0; i < n; i++)
+		z[i] = x[i] - y[i];
+}
+
+double specf::NormInf(double* x, int n)
+{
+	int indexMax = 0;
+	for (int index = 0; index < n; index++)
+	{
+		if (abs(x[indexMax]) < abs(x[index]))
+		{
+			indexMax = index;
+		}
+	}
+	return abs(x[indexMax]);
 }
 
 //Òåñòîâûå ôóíêöèè
