@@ -180,20 +180,10 @@ void InterpFunc::SplineInterpolation(const char ch)
 	for (int i = 0; i < size - 1; i++)
 		splAr[i][0] = fun(part[i]);
 
-	std::cout << "part:\n";
-	for (const auto& x : part)
-		std::cout << x << " ";
-	std::cout << "\n";
-
-	std::cout << "a:\n";
-	for (int i = 0; i < size - 1; i++)
-		std::cout << splAr[i][0] << " ";
-	std::cout << "\n";
-
 	//c_i
 	//Приведение к виду c = Cx + y
 	//C=-(A-E)
-	std::vector<double> topbotAr, midAr;
+	std::vector<double> midAr;
 	std::vector<double> bAr;
 	std::vector<double> h;
 
@@ -203,77 +193,37 @@ void InterpFunc::SplineInterpolation(const char ch)
 	gPrev = (fun(part[1]) - fun(part[0])) / h[0];
 
 	splAr[0][1] = gPrev;		//b_i
-	//std::cout << h.back() << "\n";
-	//std::cout << gPrev << "\n";
+
 	for (int i = 1; i < size - 1; i++)
 	{
 		h.push_back(part[i + 1] - part[i]);
 		gNext = (fun(part[i + 1]) - fun(part[i])) / h.back();
 
 		splAr[i][1] = gNext;			//b_i
-
 		midAr.push_back(2 * (*(&h.back() - 1) + h.back()));
-		topbotAr.push_back(h.back());
-
 		bAr.push_back(3 * (gNext - gPrev));
 
 		gPrev = gNext;
 	}
-
-	std::cout << "h:\n";
-	for (const auto& x : h)
-		std::cout << x << " ";
-	std::cout << "\n";
-
-	std::cout << "midAr:\n";
-	for (const auto& x : midAr)
-		std::cout << x << " ";
-	std::cout << "\n";
-
-	std::cout << "topbotAr:\n";
-	for (const auto& x : topbotAr)
-		std::cout << x << " ";
-	std::cout << "\n";
-
-	std::cout << "bAr:\n";
-	for (const auto& x : bAr)
-		std::cout << x << " ";
-	std::cout << "\n";
-
-
 	double* c = new double[size];
-
-	//TODO: точные значения
-	c[0] = 0.;
-	c[size - 1] = 0.;
-
 	double* c_K = new double[size];			//Начальное приближение
 
-	for (int i = 0; i < size; i++)
-		c_K[i] = 0.;
+	c[0] = specf::SecondDerivative(fun, left);
+	c[size - 1] = specf::SecondDerivative(fun, right);
+	c_K[0] = c[0];
+	c_K[size - 1] = c[size - 1];
+
+	for (int i = 1; i < size - 1; i++)
+		c_K[i] = bAr[i - 1];
 
 	double* dif = new double[size];
 
 	do
 	{
-		c[1] = (-midAr[0] + 1.)*c_K[1] - topbotAr[0] * c_K[2];
-		c[1] += bAr[0];
-
-		for (int row = 2; row < size - 2; row++)
-		{
-			c[row] = -topbotAr[row - 2] * c_K[row - 1] + (-midAr[row - 1] + 1)*c_K[row] - topbotAr[row - 1] * c_K[row + 1];
-			c[row] += bAr[row];
-		}
-
-		c[size - 2] = -topbotAr[size - 4] * c_K[size - 3] + (-midAr[size - 3] + 1.)*c_K[size - 2];
-		c[size - 2] += bAr[size - 3];
+		for (int row = 1; row < size - 1; row++)
+			c[row] = (-h[row - 1] * c_K[row - 1] - h[row] * c_K[row + 1] + bAr[row - 1]) / midAr[row - 1];
 
 		specf::Difference(c, c_K, dif, size);
-
-		std::cout << "c:\n";
-		for (int i = 0; i < size; i++)
-			std::cout << c[i] << " ";
-		std::cout << "\n";
 
 		for (int i = 1; i < size - 1; i++)
 			c_K[i] = c[i];
@@ -285,27 +235,25 @@ void InterpFunc::SplineInterpolation(const char ch)
 	{
 
 		//b_i
-		splAr[i][1] += (h[i] * (2 * c[i + 1] + c[i]) / 3);
+		splAr[i][1] -= ((h[i] * (c[i + 1] + 2 * c[i])) / 3);
 		//c_i
 		splAr[i][2] = c[i];
 		//d_i
 		splAr[i][3] = (c[i + 1] - c[i]) / (3 * h[i]);
 	}
 
-	for (int i = 0; i < size - 1; i++)
-	{
-		std::cout << "s_" << i << " = " << splAr[i][0] << " + "
-			<< splAr[i][1] << "(x-x_" << i << ") + "
-			<< splAr[i][2] << "(x-x_" << i << ")^2 + "
-			<< splAr[i][3] << "(x-x_0)^3\n";
-	}
+	//for (int i = 0; i < size - 1; i++)
+	//{
+	//	std::cout << "s_" << i + 1 << " = " << splAr[i][0] << " + "
+	//		<< splAr[i][1] << "(x-x_" << i << ") + "
+	//		<< splAr[i][2] << "(x-x_" << i << ")^2 + "
+	//		<< splAr[i][3] << "(x-x_" << i << ")^3\n";
+	//}
 
 	for (int i = 0; i < size - 1; i++)
 	{
 		stream << splAr[i][0] << " " << splAr[i][1] << " " << splAr[i][2] << " " << splAr[i][3] << "\n";
 	}
-
-
 
 	//----------------
 	auto end = std::chrono::system_clock::now();
