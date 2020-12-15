@@ -1,7 +1,36 @@
 -----------------------
-Number of nodes: 8
-Lagrangian polynomial:
+Number of nodes: 4
 Uniform Partition
-0.999476+0.744019*x^(4)
-Error rate:3.01981e-14
-Elapsed time: 0.0058673s
+Error rate: 0.058358
+Chebyshev Partition
+Error rate: 0.0588154
+-----------------------
+Number of nodes: 8
+Uniform Partition
+Error rate: 0.00427302
+Chebyshev Partition
+Error rate: 0.00173222
+-----------------------
+Number of nodes: 16
+Uniform Partition
+Error rate: 6.69696e-05
+Chebyshev Partition
+Error rate: 1.49885e-06
+-----------------------
+Number of nodes: 32
+Uniform Partition
+Error rate: 3.4793e-08
+Chebyshev Partition
+Error rate: 1.12044e-12
+-----------------------
+Number of nodes: 64
+Uniform Partition
+Error rate: 3.66229
+Chebyshev Partition
+Error rate: 2.33147e-15
+-----------------------
+Number of nodes: 128
+Uniform Partition
+Error rate: 2.0933e+19
+Chebyshev Partition
+Error rate: 2.77556e-15

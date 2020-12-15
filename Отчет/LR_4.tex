@@ -14,21 +14,216 @@
 \usepackage[footnotes,oglav,spisok,boldsect,eqwhole,kursrab,remarks,hyperprint]{projectNew}
 \usepackage{listings}
 \begin{document}
+	
+	Вариант 10
+	
+	$$ y=x^2$$
 \begin{tabular}{c|c|c}
 Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
 узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
 	\hline
-4	&  &  \\
+4	&  2.22045e-16 & 2.22045e-16 \\
 	\hline
-8	&  &  \\
+8	&  4.44089e-16&3.33067e-16  \\
 	\hline
-16	&  &  \\
+16	&  8.77076e-15& 6.66134e-16 \\
 	\hline
-32	&  &  \\
+32	&  5.57503e-11& 7.77156e-16 \\
 	\hline
-64	&  &  \\
+64	&0.0577191  & 1.66533e-15 \\
 	\hline
-128	&  &  \\
+128	& 4.08435e+16 & 1.66533e-15 \\
 \end{tabular}
+
+	$$ y = 1/(1 + x^2)$$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  0.058358 & 0.0588154 \\
+	\hline
+	8	&  0.00427302&0.00173222  \\
+	\hline
+	16	&  6.69696e-05& 1.49885e-06 \\
+	\hline
+	32	& 3.4793e-08& 1.12044e-12 \\
+	\hline
+	64	&3.66229  & 2.33147e-15 \\
+	\hline
+	128	& 2.0933e+19 & 2.77556e-15 \\
+\end{tabular}
+
+	$$ y =\frac{1}{\arctan{1 + 10 x^2}} $$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  0.592193 & 0.600528 \\
+	\hline
+	8	&  0.431332&0.508189  \\
+	\hline
+	16	&  3.12169& 0.284277 \\
+	\hline
+	32	& 11810.8&  0.0626636 \\
+	\hline
+	64	&1.99934e+11  &0.002339 \\
+	\hline
+	128	& 3.14959e+25 & 2.47117e-06 \\
+\end{tabular}
+
+	$$ y =(4x^3+2x^2-4x+2)^{\sqrt{2}}+\arcsin{\frac{1}{5+x-x^2}}-5 $$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  0.448655 & 0.420825 \\
+	\hline
+	8	&  0.0772716&0.0195965  \\
+	\hline
+	16	&  0.00492547& 0.000114192 \\
+	\hline
+	32	&0.00322886&  2.51535e-08\\
+	\hline
+	64	&7.12197  &3.33067e-14 \\
+	\hline
+	128	& 5.07723e+19 & 9.76996e-15 \\
+\end{tabular}
+
+\newpage
+	$$ y=\sin{\frac{x^4 + x^3 - 3 x + 3 - 30^{(1/3)}}{2}} + 
+	\tanh{\frac{4\sqrt{3} x^3 - 2 x - 6 \sqrt{2} + 1}{-2 \sqrt{3} x^3 + x + 
+			3 \sqrt{2}}} + 1.2$$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  0.1181846 & 0.0801557 \\
+	\hline
+	8	&  0.00727943&0.00313936  \\
+	\hline
+	16	& 0.000600516& 7.11092e-05 \\
+	\hline
+	32	&  8.90465e-06& 2.5106e-08 \\
+	\hline
+	64	&3.27488  & 3.55271e-15 \\
+	\hline
+	128	& 2.5324e+19 & 3.77476e-15 \\
+\end{tabular}
+
+	$$ y=1$$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  5.55112e-16 & 3.33067e-16 \\
+	\hline
+	32	&  1.68321e-09& 1.55431e-15 \\
+	\hline
+	128	& 2.14066e+19 & 3.33067e-15\\
+\end{tabular}
+
+
+\begin{figure}[h]
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{f7_4nods} \\ 4 узла}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{f7_128nods} \\128 узлов}
+	\end{minipage}
+\end{figure}
+
+	$$ y = 1/(1 + 25x^2)$$
+\begin{tabular}{c|c|c}
+	Количество &Норма ошибки интерполяции &Норма ошибки интерполяции\\
+	узлов $n$	&на равномерной сетке  &на чебышевской сетке  \\
+	\hline
+	4	&  0.706633 & 0.749919 \\
+	\hline
+	8	&  0.247045 & 0.391397  \\
+	\hline
+	16	&  2.10275 & 0.0829116 \\
+	\hline
+	32	& 703.995 & 0.00343679 \\
+\end{tabular}
+
+\newpage
+\begin{figure}[h]
+	\begin{minipage}[h]{0.47\linewidth}
+			\center{\includegraphics[width=1\linewidth]{uf8_4nods}} 4 узла \\
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.47\linewidth}
+		\center{\includegraphics[width=1\linewidth]{uf8_8nods}} \\8 узла
+	\end{minipage}
+	\vfill
+	\begin{minipage}[h]{0.47\linewidth}
+	\center{\includegraphics[width=1\linewidth]{uf8_16nods}} 16 узла \\
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.47\linewidth}
+	\center{\includegraphics[width=1\linewidth]{uf8_32nods}}  32 узла \\
+	\end{minipage}
+	\caption{Равномерная сетка}
+\end{figure}
+\begin{figure}[h]
+	\begin{minipage}[h]{0.47\linewidth}
+		\center{\includegraphics[width=1\linewidth]{cf8_4nods}} 4 узла \\
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.47\linewidth}
+		\center{\includegraphics[width=1\linewidth]{cf8_8nods}} \\8 узла
+	\end{minipage}
+	\vfill
+	\begin{minipage}[h]{0.47\linewidth}
+		\center{\includegraphics[width=1\linewidth]{cf8_16nods}} 16 узла \\
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.47\linewidth}
+		\center{\includegraphics[width=1\linewidth]{cf8_32nods}}  32 узла \\
+	\end{minipage}
+	\caption{Чебышёвская сетка}
+\end{figure}
+\newpage
+\begin{figure}[h]
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{sf0_4nods} \\ 4 узла}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{sf0_8nods} \\8 узлов}
+	\end{minipage}
+\caption{Сплайн интерполяция $y=x$}
+\end{figure}
+\begin{figure}[h]
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{sf1_4nods} \\ 4 узла}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[h]{0.49\linewidth}
+		\center{\includegraphics[width=1\linewidth]{sf1_8nods} \\8 узлов}
+	\end{minipage}
+	\caption{Сплайн интерполяция $y=x^2$}
+\end{figure}
+
+
+\newpage
+$q=0.5$
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+	$n$& шаг сетки $h_n$& норма сетки $err_n$& отношение ошибок $z_n$& порядок сходимости $p_n$\\
+	\hline
+	1& $h$& & & \\
+	\hline
+	2& $qh$& & & \\
+	\hline
+	3& $q^2h$& & & \\
+	\hline
+	4& $q^3h$& & & \\
+	\hline
+	5& $q^4h$& & & \\
+\end{tabular}
+\end{center}
+
 
 \end{document}

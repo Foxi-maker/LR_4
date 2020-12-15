@@ -14,28 +14,49 @@ InterpFunc::InterpFunc(std::function<double(double)> f, int a, int b, std::strin
 
 	streamName = name;
 
-	//UniformPartition(n);
-	//ChebyshevPartition(n);
+	//очистка файла результатов
+	if (stream.is_open())
+		stream.close();
+	stream.open("Results/" + streamName + ".txt", std::ios_base::out);
+	if (!stream.is_open())
+	{
+		std::cout << "File " << streamName << " was not opened for writing!";
+		exit(1);
+	}
 }
 
-void InterpFunc::NumNods(int n)
+void InterpFunc::NumNods(int n, int wp = 0)
 {
+	StreamAssociate("Results/");
 	stream << "-----------------------\n"
 		<< "Number of nodes: " << n << "\n";
 	unifPart.clear();
+	fuP.clear();
 	chebPart.clear();
-	UniformPartition(n);
-	ChebyshevPartition(n);
+	fcP.clear();
+	UniformPartition(n,wp);
+	ChebyshevPartition(n,wp);
 }
 
-void InterpFunc::UniformPartition(int numNod)
+void InterpFunc::UniformPartition(int numNod, int wp=0)
 {
-	double h = (right - left) / (double)(numNod - 1);
-	for (int i = 0; i < numNod; i++)
+	double q = 0.5;
+	if (!wp)
+		stream << "q: " << q << "\n";
+	double h = pow(q,wp)*(right - left) / (double)(numNod - 1);
+
+	for (int i = 0; (left + i * h )< right; i++)
 	{
 		unifPart.push_back(left + i * h);
 		//std::cout << unifPart[i] << "\n";
 	}
+	std::cout << "\n";
+	for (const auto& u : unifPart)
+	{
+		fuP.push_back(fun(u));
+		//std::cout << fuP.back() << "\n";
+	}
+		
 }
 
 void InterpFunc::ChebyshevPartition(int numNod)
@@ -48,23 +69,55 @@ void InterpFunc::ChebyshevPartition(int numNod)
 		chebPart.push_back(h1 + h2 * cos(((2 * i + 1)*M_PI) / (2 * (numNod))));
 		//std::cout << chebPart[i] << "\n";
 	}
+	for (const auto& c : chebPart)
+		fcP.push_back(fun(c));
+}
+
+double InterpFunc::LagrangePoint(std::vector<double>& p, std::vector<double>& fp, double x)
+{
+	long double num, den;
+	long double res = 0.;
+
+	for (int index = 0; index < p.size(); index++)
+	{
+		num = 1.;
+		den = 1.;
+
+		for (int j = 0; j < index; j++)
+		{
+			num *= x - p[j];
+			den *= p[index] - p[j];
+		}
+		for (int j = index + 1; j < p.size(); j++)
+		{
+			num *= x - p[j];
+			den *= p[index] - p[j];
+		}
+		//std::cout << "num " << num << "\n";
+		//std::cout << "den" << den << "\n";
+		//TODO: переполнение
+		res += fp[index] * num / den;
+		//std::cout << "fp[index] " << fp[index] << "\n";
+		//std::cout << "res " << res << "\n";
+	}
+	return res;
 }
 
 void InterpFunc::LagrangePol(const char ch)
 {
-	//---------------
-	auto start = std::chrono::system_clock::now();
-	//--------------
+	//StreamOpen("Results/");
 
-	std::vector<double> part;
+	std::vector<double> part, fpart;
 	switch (ch)
 	{
 	case 'C':					//C- Chebyshev Partition
 		part = chebPart;
+		fpart = fcP;
 		stream << "Chebyshev Partition\n";
 		break;
 	case 'U':					//U- Uniform Partition
 		part = unifPart;
+		fpart = fuP;
 		stream << "Uniform Partition\n";
 		break;
 	default:
@@ -72,87 +125,13 @@ void InterpFunc::LagrangePol(const char ch)
 		break;
 	}
 
-	int size = part.size();
-	//В каждой ячейке массива l содержится коэф. перед c, начиная c c^0
-	double* l = new double[size];
-	for (int i = 0; i < size; i++)
-		l[i] = 0.;
+	//LErrorRate(part, fpart);
 
-	std::vector<int> lIndex;
-	for (int i = 0; i < (size - 1); i++)
-		lIndex.push_back(i);
-
-	double denominator;
-	int indexDen = size;
-	do
-	{
-		denominator = 1.;
-		indexDen--;
-		for (const auto& li : lIndex)
-			denominator *= part[indexDen] - part[li];
-
-		denominator = fun(part[indexDen]) / denominator;
-
-		std::vector<double> tPart;
-		for (const auto& li : lIndex)
-			tPart.push_back(part[li]);
-
-		for (int brackIndex = 0; brackIndex < size - 1; brackIndex++)
-		{
-			//Вектор индексов 
-			std::vector<int> perIndex;
-			for (int i = 0; i < (size - 1 - brackIndex); i++)
-				perIndex.push_back(i);
-
-			double sum = 0.;
-			do
-			{
-				double temp = 1.;
-				for (const auto& v : perIndex)
-					temp *= tPart[v];
-
-				sum -= temp;
-
-			} while (specf::next_combination(perIndex, size - 1));
-			l[brackIndex] += sum * denominator;
-		}
-		l[size - 1] += denominator;
-	} while (specf::next_combination(lIndex, size));
-
-	//for (int i = 0; i < size; i++)
-	//	std::cout << l[i] << " ";
-	//std::cout << "\n ";
-
-	if (!(l[0] < 1.e-10))
-		stream << l[0];
-	for (int i = 1; i < size - 1; i++)
-		if (l[i] < 1.e-10)
-			continue;
-		else
-			if (l[i] < 0)
-				stream << l[i] << "*c^(" << i << ")";
-			else
-				stream << "+" << l[i] << "*c^(" << i << ")";
-	stream << "\n";
-
-	ErrorRate(l, size, part);
-	//----------------
-	auto end = std::chrono::system_clock::now();
-
-	std::chrono::duration<double> elapsed = end - start;
-	stream << "Elapsed time: " << elapsed.count() << "s\n";
-	//----------------
-
-	//RenderGridToFile(l,size);
-	delete[] l;
+	//LRenderGridToFile(part, fpart);
 }
 
 void InterpFunc::SplineInterpolation(const char ch)
 {
-	//---------------
-	auto start = std::chrono::system_clock::now();
-	//--------------
-
 	std::vector<double> part;
 	switch (ch)
 	{
@@ -242,26 +221,6 @@ void InterpFunc::SplineInterpolation(const char ch)
 		splAr[i][3] = (c[i + 1] - c[i]) / (3 * h[i]);
 	}
 
-	//for (int i = 0; i < size - 1; i++)
-	//{
-	//	std::cout << "s_" << i + 1 << " = " << splAr[i][0] << " + "
-	//		<< splAr[i][1] << "(x-x_" << i << ") + "
-	//		<< splAr[i][2] << "(x-x_" << i << ")^2 + "
-	//		<< splAr[i][3] << "(x-x_" << i << ")^3\n";
-	//}
-
-	for (int i = 0; i < size - 1; i++)
-	{
-		stream << splAr[i][0] << " " << splAr[i][1] << " " << splAr[i][2] << " " << splAr[i][3] << "\n";
-	}
-
-	//----------------
-	auto end = std::chrono::system_clock::now();
-
-	std::chrono::duration<double> elapsed = end - start;
-	stream << "Elapsed time: " << elapsed.count() << "s\n";
-	//----------------
-
 	SRenderGridToFile(splAr, part);
 
 	delete[] c;
@@ -273,26 +232,44 @@ void InterpFunc::SplineInterpolation(const char ch)
 	delete[] splAr;
 }
 
-void InterpFunc::ErrorRate(double* coef, int s, std::vector<double>& part)
+void InterpFunc::LErrorRate(std::vector<double>& p, std::vector<double>& fp)
 {
-	double max = 0., temp, dif;
-	for (const auto& p : part)
+	int size = p.size();
+
+	//Разбиение
+	const int nods = 256;
+
+	double h = (right - left) / (double)(nods - 1); 
+
+	double max = 0., point, dif;
+	for (int i = 1; i < nods; i++)
 	{
-		temp = 0.;
-		for (int j = 0; j < s; j++)
-			temp += coef[j] * pow(p, j);
-		dif = fabs(fun(p) - temp);
+		point = left + i * h;
+		dif = fabs(fun(point) - LagrangePoint(p, fp, point));
 		if (dif > max)
 			max = dif;
 	}
+	
 	stream << "Error rate: " << max << "\n";
 }
 
-void InterpFunc::StreamOpen(std::string file)
+void InterpFunc::StreamOpen(std::string file, std::string fn = "")
 {
 	if (stream.is_open())
 		stream.close();
-	stream.open(file + streamName + ".txt", std::ios_base::out);
+	stream.open(file + streamName + "_" + fn + "nods.txt", std::ios_base::out);
+	if (!stream.is_open())
+	{
+		std::cout << "File " << streamName << " was not opened for writing!";
+		exit(1);
+	}
+}
+
+void InterpFunc::StreamAssociate(std::string file)
+{
+	if (stream.is_open())
+		stream.close();
+	stream.open(file + streamName + ".txt", std::ios_base::app);
 	if (!stream.is_open())
 	{
 		std::cout << "File " << streamName << " was not opened for writing!";
@@ -305,30 +282,33 @@ void InterpFunc::OutToFile(const std::string s) const
 	stream << s << "\n";
 }
 
-void InterpFunc::LRenderGridToFile(double* coef, int s)
+void InterpFunc::LRenderGridToFile(std::vector<double>& part, std::vector<double>& fpart)
 {
+	int size = part.size();
 	//Разбиение
-	const int nods = 50;
-	StreamOpen("Render_Grid/");
+	const int nods = 256 / size;
 
-	double h = (right - left) / (double)(nods - 1);
-	double temp;
-	for (int i = 0; i < nods; i++)
+	StreamOpen("Render_Grid/", std::to_string(size));
+
+	double h;
+	double point;
+	for (int i = 0; i < size - 1; i++)
 	{
-		temp = 0.;
-		stream << left + i * h << " ";
-		for (int j = 0; j < s; j++)
-			temp += coef[j] * pow(left + i * h, j);
-		stream << temp << "\n";
-	}
+		h = (part[i + 1] - part[i]) / (double)(nods - 1);
+		for (int j = 0; j < nods; j++)
+		{
+			point = part[i] + j * h;
 
+			stream << point << " ";
+			stream << LagrangePoint(part, fpart, point) << "\n";
+		}
+	}
 }
 
 void InterpFunc::SRenderGridToFile(double** coef, std::vector<double>& part)
 {
-	//Разбиение
+	StreamOpen("sRender_Grid/", std::to_string(part.size()));
 
-	StreamOpen("sRender_Grid/");
 
 	for (int i = 0; i < part.size() - 1; i++)
 	{
@@ -345,6 +325,32 @@ void InterpFunc::SRenderGridToFile(double** coef, std::vector<double>& part)
 		}
 	}
 }
+
+void InterpFunc::LOrderOfConvergence(std::vector<double>& p, std::vector<double>& fp)
+{
+	int size = p.size();
+
+	const int nods = 256;
+
+	double h = (right - left) / (double)(nods - 1);
+
+	double max = 0., point, dif;
+	double prevErr;
+	for (int i = 0; i < nods; i++)
+	{
+		point = left + i * h;
+		dif = fabs(fun(point) - LagrangePoint(p, fp, point));
+		if (dif > max)
+			max = dif;
+	}
+
+	stream << "Error rate: " << max << "\n";
+}
+//
+//void InterpFunc::SOrderOfConvergence(double **, std::vector<double>&)
+//{
+//	double q = 0.5;
+//}
 
 InterpFunc::~InterpFunc()
 {

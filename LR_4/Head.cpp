@@ -47,6 +47,11 @@ double specf::NormInf(double* x, int n)
 }
 
 //Тестовые функции
+double testf::fun0(double x)
+{
+	return  x;
+}
+
 double testf::fun1(double x)
 {
 	return x * x;
@@ -79,4 +84,19 @@ double testf::fun5(double x)
 double testf::fun6(double x)
 {
 	return exp(-x);
+}
+
+double testf::fun7(double x)
+{
+	return 1;
+}
+
+double testf::fun8(double x)
+{
+	return 1 / (1 + 25 * x * x);
+}
+
+double testf::fun9(double x)
+{
+	return sin(M_PI*x);
 }

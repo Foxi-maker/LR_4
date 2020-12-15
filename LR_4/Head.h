@@ -7,7 +7,6 @@
 #include <math.h>
 #include <fstream>
 #include <string>
-#include <chrono>
 
 namespace specf
 {
@@ -26,11 +25,14 @@ namespace specf
 //Тестовые функции
 namespace testf
 {
+	double fun0(double x);
 	double fun1(double x);
 	double fun2(double x);
 	double fun3(double x);
 	double fun4(double x);
 	double fun5(double x);
 	double fun6(double x);
-
+	double fun7(double x);
+	double fun8(double x);
+	double fun9(double x);
 }
