@@ -32,5 +32,5 @@ namespace testf
 	double fun4(double x);
 	double fun5(double x);
 	double fun6(double x);
-
+	double fun7(double x);
 }

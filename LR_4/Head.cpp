@@ -80,3 +80,8 @@ double testf::fun6(double x)
 {
 	return exp(-x);
 }
+
+double testf::fun7(double x)
+{
+	return sin(M_PI*x);
+}

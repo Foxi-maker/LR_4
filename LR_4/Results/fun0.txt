@@ -1,0 +1,18 @@
+-----------------------
+Number of nodes: 4
+Uniform Partition
+-----------------------
+Number of nodes: 8
+Uniform Partition
+-----------------------
+Number of nodes: 16
+Uniform Partition
+-----------------------
+Number of nodes: 32
+Uniform Partition
+-----------------------
+Number of nodes: 64
+Uniform Partition
+-----------------------
+Number of nodes: 128
+Uniform Partition

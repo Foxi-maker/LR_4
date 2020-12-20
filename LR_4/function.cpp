@@ -149,10 +149,6 @@ void InterpFunc::LagrangePol(const char ch)
 
 void InterpFunc::SplineInterpolation(const char ch)
 {
-	//---------------
-	auto start = std::chrono::system_clock::now();
-	//--------------
-
 	std::vector<double> part;
 	switch (ch)
 	{
@@ -244,25 +240,29 @@ void InterpFunc::SplineInterpolation(const char ch)
 
 	//for (int i = 0; i < size - 1; i++)
 	//{
-	//	std::cout << "s_" << i + 1 << " = " << splAr[i][0] << " + "
-	//		<< splAr[i][1] << "(x-x_" << i << ") + "
-	//		<< splAr[i][2] << "(x-x_" << i << ")^2 + "
-	//		<< splAr[i][3] << "(x-x_" << i << ")^3\n";
+	//	stream << splAr[i][0] << " " << splAr[i][1] << " " << splAr[i][2] << " " << splAr[i][3] << "\n";
 	//}
 
-	for (int i = 0; i < size - 1; i++)
+	
+	double max = 0., temp, differ;
+	for (int i = 0; i < part.size() - 1; i++)
 	{
-		stream << splAr[i][0] << " " << splAr[i][1] << " " << splAr[i][2] << " " << splAr[i][3] << "\n";
+		const int nods = 4;
+		double h = (part[i + 1] - part[i]) / (double)(nods - 1);
+		double temp;
+
+		for (int j = 0; j < nods; j++)
+		{
+			//stream << part[i] + j * h << " ";
+			temp = splAr[i][0] + splAr[i][1] * (j*h) + splAr[i][2] * pow(j * h, 2) + splAr[i][3] * pow(j * h, 3);
+			differ = fabs(fun(part[i] + j * h) - temp);
+			if (differ > max)
+				max = differ;
+		}
 	}
+	stream << "Error rate: " << max << "\n";
 
-	//----------------
-	auto end = std::chrono::system_clock::now();
-
-	std::chrono::duration<double> elapsed = end - start;
-	stream << "Elapsed time: " << elapsed.count() << "s\n";
-	//----------------
-
-	SRenderGridToFile(splAr, part);
+	//SRenderGridToFile(splAr, part);
 
 	delete[] c;
 	delete[] c_K;

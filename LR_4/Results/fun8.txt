@@ -1,0 +1,12 @@
+-----------------------
+Number of nodes: 4
+Chebyshev Partition
+-----------------------
+Number of nodes: 8
+Chebyshev Partition
+-----------------------
+Number of nodes: 16
+Chebyshev Partition
+-----------------------
+Number of nodes: 32
+Chebyshev Partition

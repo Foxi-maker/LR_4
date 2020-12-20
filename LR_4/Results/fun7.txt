@@ -1,0 +1,24 @@
+-----------------------
+Number of nodes: 4
+Uniform Partition
+Error rate: 0.0721735
+-----------------------
+Number of nodes: 8
+Uniform Partition
+Error rate: 0.0127194
+-----------------------
+Number of nodes: 16
+Uniform Partition
+Error rate: 0.00275252
+-----------------------
+Number of nodes: 32
+Uniform Partition
+Error rate: 0.000643544
+-----------------------
+Number of nodes: 64
+Uniform Partition
+Error rate: 0.000155767
+-----------------------
+Number of nodes: 128
+Uniform Partition
+Error rate: 3.83279e-05
